@@ -1,5 +1,5 @@
 #include <stdio.h>
-#define tq 2
+#define tq 3
 struct Process
 {
   char name;
@@ -8,7 +8,7 @@ struct Process
 };
 void main()
 {
-  int n,i,sbt=0;
+  int n,i;
   printf("Enter the number of processes you want to insert: \n");
   scanf("%d",&n);
   struct Process p[n];
@@ -21,53 +21,89 @@ void main()
     printf("Burst Time: ");
     scanf(" %d",&p[i].bt);
     p[i].rbt=p[i].bt;
-    sbt+=p[i].bt;
     p[i].comp=0;
     p[i].ct=p[i].wt=p[i].tat=p[i].rt=0;
   }
-  int j=0;
-  int flag=0;
-  int t=0;
-  while(flag==0)
+  int a;
+  struct Process temp;
+  int j;
+  for(i=0;i<n-1;i++) //sorts the process in order of their arrival.
   {
-      if(p[j].at<=t && p[j].comp!=1)
+    a=i;
+    for(j=i+1;j<n;j++)
+    {
+      if(p[j].at<p[a].at)
+      a=j;
+    }
+    temp=p[i];
+    p[i]=p[a];
+    p[a]=temp;
+  }
+  printf("\n");
+
+  int t=0;
+  int np=0;
+  while(1)
+  {
+    if(t>=p[np].at)
+    {
+      //process arrived
+      if(p[np].rbt>0)
       {
-        printf("HI\n");
-        if(p[j].rbt<=tq)
+        if(p[np].rbt==p[np].bt)
+        p[np].rt=t;
+        //process in ready queue
+        if(p[np].rbt>=tq)
         {
-          if(p[j].rbt==p[j].bt)
-          p[j].rt=t;
-          t+=p[j].rbt;
-          p[j].comp=1;
-          p[j].ct=t;
-          p[j].wt=p[j].ct-p[j].at-p[j].bt;
-          p[j].tat=p[j].ct-p[j].at;
+          t+=tq;
+          p[np].rbt-=tq;
+          p[np].ct=t;
+          printf(" %c(%d) |",p[np].name,t);
         }
         else
         {
-          if(p[j].rbt==p[j].bt)
-          p[j].rt=t;
-          printf("%c(%d)->",p[j].name,t);
-          t+=tq;
-          p[j].rbt-=tq;
+          t+=p[np].rbt;
+          p[np].rbt=0;
+          p[np].ct=t;
+          printf(" %c(%d) |",p[np].name,t);
         }
       }
-        j++;
-        if(j>=n)
-        j=0;
-        for(i=0;i<n;i++)
-        {
-          if(p[i].comp==1)
-          flag=1;
-          else
-          flag=0;
-        }
-        printf("\nFlag=%d\n",flag);
+        else;
+      //process arrived and finished executing
+    }
+    else;
+      //process hasn't even arrived in ready queue yet
+
+    np=(np+1)%n;
+    int flag=0;
+    for(i=0;i<n;i++) //checks if there is any unfinished process
+    if(p[i].rbt>0)
+    flag=1;
+
+    if(flag==0) //when there are no unfinished processes
+    break;
   }
-  printf("\nProcess \t Arrival Time \t Burst Time \t Waiting Time \t TurnAround Time \t Response Time \t Completion Time\n");
-  for(i=0;i<n;i++)
+  printf("\n");
+  float swt=0.0,stat=0.0,srt=0.0,sct=0.0;
+  printf("\nProc \t AT \t BT \t CT \t RT \t TAT \t WT\n");
+  //format for Process info table
+  for (i=0;i<n;i++) //
   {
-    printf("%c      \t           %d \t         %d \t           %d \t             %d \t              %d \t               %d\n"
-              ,p[i].name,p[i].at,p[i].bt,p[i].wt,p[i].tat,p[i].rt,p[i].ct);
+    //calculates TAT and WT for each process
+    p[i].tat=p[i].ct-p[i].at;
+    p[i].wt=p[i].tat-p[i].bt;
+    //prints process info table
+    printf("%c \t %d \t %d \t %d \t %d \t %d \t %d\n"
+              ,p[i].name,p[i].at,p[i].bt,p[i].ct,p[i].rt,p[i].tat,p[i].wt);
+      swt+=p[i].wt;
+      stat+=p[i].tat;
+      srt+=p[i].rt;
+      sct+=p[i].ct;
   }
+
+  printf("Average TurnAround Time: %f\n",(stat/n));
+  printf("Average Waiting Time: %f\n",(swt/n));
+  printf("Average Response Time: %f\n",(srt/n));
+  printf("Average Completion Time: %f\n",(sct/n));
+  printf("\n");
 }
