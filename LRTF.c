@@ -69,8 +69,8 @@ void main()
 		if(lp==temp) //case when all the processes are completely finished
 		break;
 	}
-	float srt, swt, stat;
-	srt=swt=stat=0.0;
+	float sct, srt, swt, stat;
+	sct=srt=swt=stat=0.0;
 	printf("\b \b \b \n");
 
 	//prints process info table
@@ -86,13 +86,16 @@ void main()
 		swt+=p[i].wt;
 		stat+=p[i].tat;
 		srt+=p[i].rt;
+		sct+=p[i].ct;
 
 		//prints info for each process
 
 		printf("%c \t %d \t %d \t %d \t %d \t %d \t %d \n",p[i].name,p[i].at,p[i].bt,p[i].ct,p[i].rt,p[i].wt,p[i].tat);
 	}
+
 	printf("\nAverage Waiting Time: %f\n",(swt/n));
 	printf("Average TurnAround Time: %f\n",(stat/n));
 	printf("Average Response Time: %f\n",(srt/n));
+	printf("Average Completion Time: %f\n",(sct/n));
 
 }
