@@ -22,25 +22,13 @@ void main()
     sbt+=p[i].bt;
     p[i].comp=0;
     p[i].ct=p[i].wt=p[i].tat=p[i].rt=0;
-    //printf("%d\n",sbt);
   }
-  printf("Gantt chart is as follows:-\n");
+  printf("\nGantt chart is as follows:-\n");
+  printf(" (0)|");
   int t;
   int fc=0;
   for(t=0;t<sbt;)
   {
-
-    /*for(i=0;i<n;i++)
-    {
-        if(p[i].at<=t && p[i].comp!=1
-        {
-            if(p[i].at<p[fc].at)
-            {
-              fc=i;
-              printf("\nfc=%d\n",fc);
-            }
-        }
-    }*/
 
     p[fc].rt=t-p[fc].at;
     p[fc].wt=t-p[fc].at;
@@ -48,15 +36,15 @@ void main()
     p[fc].ct=t;
     p[fc].tat=p[fc].ct-p[fc].at;
     p[fc].comp=1;
-    printf("%c(%d)\t",p[fc].name,t);
+    printf(" %c (%d)|",p[fc].name,t);
     fc++;
   }
   float swt=0.0,stat=0.0,srt=0.0,sct=0.0;
-  printf("\nProcess \t Arrival Time \t Burst Time \t Waiting Time \t TurnAround Time \t Response Time \t Completion Time\n");
+  printf("\n\nProc \t AT \t BT \t CT \t WT \t TAT \t RT\n\n");
   for(i=0;i<n;i++)
   {
-    printf("%c      \t           %d \t         %d \t           %d \t             %d \t              %d \t               %d\n"
-              ,p[i].name,p[i].at,p[i].bt,p[i].wt,p[i].tat,p[i].rt,p[i].ct);
+    printf("%c \t %d \t %d \t %d \t %d \t %d \t %d\n"
+              ,p[i].name,p[i].at,p[i].bt,p[i].ct,p[i].wt,p[i].tat,p[i].rt);
       swt+=p[i].wt;
       stat+=p[i].tat;
       srt+=p[i].rt;

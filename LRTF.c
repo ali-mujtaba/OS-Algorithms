@@ -32,7 +32,9 @@ void main()
 	t=0;
 	int lp; //points to the longest process
 	lp=0;
+	int flag;
 	printf("\nGantt chart is as follows:-\n");
+	printf(" (0)|");
 	while(1)
 	{
 
@@ -59,19 +61,26 @@ void main()
 		if(p[lp].rbt==0) //stores completion time for each process
 		p[lp].ct=t;
 		int temp;
-		temp=lp;
-		do //so that lp points to an unfinished process in ready queue
+		temp=0;
+		do
 		{
 			lp=(lp+1)%n;
-			if(lp==temp)
+			if(temp>n) //so that lp makes only one cycle around the ready queue
 			break;
-		}while(p[lp].rbt==0);
-		if(lp==temp) //case when all the processes are completely finished
+			temp++;
+		} while(p[lp].rbt<=0 || t<p[lp].at);
+		flag=0;
+		for(i=0;i<n;i++) //checks if there is any unfinished process
+		{
+			if(p[i].rbt>0)
+			flag=1;
+		}
+		if(flag==0) //when there are no unfinished processes
 		break;
 	}
 	float sct, srt, swt, stat;
 	sct=srt=swt=stat=0.0;
-	printf("\b \b \b \n");
+	printf("\n");
 
 	//prints process info table
 
