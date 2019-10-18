@@ -1,54 +1,56 @@
+//Write a program to implement Least-Frequent-Used Page Replacement Algorithm
+
 #include <stdio.h>
 #include <stdlib.h>
 #define n 15
 
 int leastFreq(int arr[], int f, int subref[], int nr)
 {
-  int i,j;
+  int i, j;
   int freq[f];
-  for(i=0;i<f;i++)
-  freq[i]=0;
+  for (i = 0; i < f; i++)
+    freq[i] = 0;
   // printf("Subref string: ");
   // for(i=0;i<nr;i++)
   // printf("%d ", subref[i]);
   // printf("\n");
-  for(i=0;i<f;i++)
+  for (i = 0; i < f; i++)
   {
-    for(j=0;j<nr;j++)
-    if(subref[j]==arr[i])
-    freq[i]++;
+    for (j = 0; j < nr; j++)
+      if (subref[j] == arr[i])
+        freq[i]++;
   }
   // for(i=0;i<f;i++)
   // printf("Freq of %d: %d\n",arr[i],freq[i]);
-  int lf=0;
-  for(i=0;i<f;i++)
-  if(freq[i]<freq[lf])
-  lf=i;
-  for(i=0;i<f-1;i++)
-  if(freq[i]!=freq[i+1])
-  break;
+  int lf = 0;
+  for (i = 0; i < f; i++)
+    if (freq[i] < freq[lf])
+      lf = i;
+  for (i = 0; i < f - 1; i++)
+    if (freq[i] != freq[i + 1])
+      break;
 
-  if(i==f-1)
-  return -1;
+  if (i == f - 1)
+    return -1;
   //printf("Least Frequent: %d\n",subref[lf]);
   return lf;
 }
 int relative(int arr[], int f, int subref[], int nr)
 {
-  int i,j;
+  int i, j;
   int rd[f];
-  for(j=0;j<f;j++)
+  for (j = 0; j < f; j++)
   {
-    for(i=nr-1;i>=0;i--)
+    for (i = nr - 1; i >= 0; i--)
     {
-      if(subref[i]==arr[j])
+      if (subref[i] == arr[j])
       {
-        rd[j]=i;
+        rd[j] = i;
         break;
       }
     }
   }
-  int t=0;
+  int t = 0;
   // for(i=0;i<nr;i++)
   // {
   //   for(j=0;j<f;j++)
@@ -57,19 +59,19 @@ int relative(int arr[], int f, int subref[], int nr)
   //   if(j<nr)
   //   break;
   // }
-  int lr=0;
-  for(i=0;i<f;i++)
-  if(rd[i]<rd[lr])
-  lr=i;
+  int lr = 0;
+  for (i = 0; i < f; i++)
+    if (rd[i] < rd[lr])
+      lr = i;
   return lr;
 }
 int pagecheck(int arr[], int f, int p)
 {
   int i;
-  for(i=0;i<f;i++)
+  for (i = 0; i < f; i++)
   {
-    if(arr[i]==p)
-    return 1;
+    if (arr[i] == p)
+      return 1;
   }
   return -1;
 }
@@ -77,84 +79,84 @@ int pagecheck(int arr[], int f, int p)
 void main()
 {
   int i;
-  int hit=0,fault=0;
+  int hit = 0, fault = 0;
   printf("Reference String? ");
   char refstr[500];
-  fgets(refstr,500,stdin);
+  fgets(refstr, 500, stdin);
   int ref[n];
   char bufstr[5];
-  int thm=0;
-  int j=0;
-  int k=0;
-  i=0;
-  while(refstr[i]!='\0')
+  int thm = 0;
+  int j = 0;
+  int k = 0;
+  i = 0;
+  while (refstr[i] != '\0')
   {
-    if(refstr[i]==' ')
+    if (refstr[i] == ' ')
     {
-      bufstr[j]='\0';
-      ref[k]=atoi(bufstr);
+      bufstr[j] = '\0';
+      ref[k] = atoi(bufstr);
       k++;
 
-      while(j>0) //to reset bufstr
+      while (j > 0) //to reset bufstr
       {
         j--;
-        bufstr[j]='0';
+        bufstr[j] = '\0';
       }
     }
     else
     {
-      bufstr[j]=refstr[i];
+      bufstr[j] = refstr[i];
       j++;
     }
     i++;
   }
-  bufstr[j]='\0';
-  ref[k]=atoi(bufstr);
+  bufstr[j] = '\0';
+  ref[k] = atoi(bufstr);
   int nof;
   printf("Enter the number of frames: ");
-  scanf("%d",&nof);
+  scanf("%d", &nof);
   int frames[n];
-  for(i=0;i<nof;i++)
-  frames[i]=-99;
+  for (i = 0; i < nof; i++)
+    frames[i] = -99;
   // int rf=0; //pointing to the frame to be replaced.
-  for(i=0;i<n;i++)
+  for (i = 0; i < n; i++)
   {
-    if(pagecheck(frames,nof,ref[i])==-1)
+    if (pagecheck(frames, nof, ref[i]) == -1)
     {
-      printf("Page Fault: %d\n",ref[i]);
+      printf("Page Fault: %d\n", ref[i]);
       fault++;
-      if(i<nof)
-      frames[i]=ref[i];
+      if (i < nof)
+        frames[i] = ref[i];
       else
       {
         int subref[i];
 
-        for(j=0;j<i;j++)
-        subref[j]=ref[j];
+        for (j = 0; j < i; j++)
+          subref[j] = ref[j];
 
-        int rf= leastFreq(frames,nof,subref,i);
-        if(rf==-1)
-        rf=relative(frames,nof,subref,i);
+        int rf = leastFreq(frames, nof, subref, i);
+        if (rf == -1)
+          rf = relative(frames, nof, subref, i);
 
-        frames[rf]=ref[i];
+        frames[rf] = ref[i];
       }
       // rf=(rf+1)%nof;
     }
     else
     {
-      printf("Hit: %d\n",ref[i]);
+      printf("Hit: %d\n", ref[i]);
       hit++;
     }
 
     //displaying status of frame after every hit or fault
-    for(j=0;j<nof;j++)
-    if(frames[j]==-99)
-    printf("- ");
-    else
-    printf("%d ",frames[j]);
+    for (j = 0; j < nof; j++)
+      if (frames[j] == -99)
+        printf("- ");
+      else
+        printf("%d ", frames[j]);
     printf("\n");
   }
 
-  printf("\nNo. of hits: %d\n",hit);
-  printf("\nNo. of page faults: %d\n",fault);
+  printf("\nNo. of hits: %d\n", hit);
+  printf("No. of page faults: %d\n", fault);
 }
